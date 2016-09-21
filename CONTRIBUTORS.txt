@@ -1,0 +1,3 @@
+List of contributors of charm_templates_openstack:
+
+* Liam young <liam.young@canonical.com>

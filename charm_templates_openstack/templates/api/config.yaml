@@ -1,0 +1,33 @@
+prompts:
+  packages:
+    prompt: What packages should this charm install (space seperated list)?
+    default: 'mistral-api mistral-engine mistral-executor'
+    type: string
+  release:
+    prompt: What is the earliest OpenStack release this charm will support?
+    default: 'mitaka'
+    type: string
+  api_service:
+    prompt: What is the name of the api service?
+    default: 'mistral-api'
+    type: string
+  service_init:
+    prompt: Provide a space sperated list of the services this charm provides
+    default: 'mistral-engine mistral-executor'
+    type: string
+  service_port:
+    prompt: What port does the api service listen on ?
+    default: '8989'
+    type: string
+  service_name:
+    prompt: What name should be used for this service in the keystone catalogue?
+    default: 'mistral'
+    type: string
+  service_confs:
+    prompt: List of config files managed by this charm (space seperated)
+    default: '/etc/mistral/logging.conf /etc/mistral/mistral.conf /etc/mistral/wf_trace_logging.conf'
+    type: string
+  db_sync_command:
+    prompt: What command is used to sync the database (If multiple are needed provide a comma seperated list)?
+    default: 'mistral-db-manage --config-file /etc/mistral/mistral.conf populate, mistral-db-manage --config-file /path/to/mistral.conf populate'
+    type: string

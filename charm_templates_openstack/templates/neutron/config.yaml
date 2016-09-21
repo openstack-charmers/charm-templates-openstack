@@ -1,0 +1,9 @@
+prompts:
+  packages:
+    prompt: What packages should this charm install (space seperated list)?
+    default: ''
+    type: string
+  release:
+    prompt: What is the earliest OpenStack release this charm is compatable with?
+    default: 'liberty'
+    type: string
