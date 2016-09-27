@@ -26,8 +26,7 @@ log = logging.getLogger(__name__)
 class APITemplate(openstack_template.OpenStackCharmTemplate):
     """Creates a reactive, layered python-based charm"""
 
-    #_TEMPLATE_URL = "https://github.com/gnuoy/charm_template_api"
-    _TEMPLATE_URL = "/home/ubuntu/cookie-cutter/cake-molds/charm-template-api"
+    _TEMPLATE_URL = "https://github.com/openstack-charmers/charm-template-api.git"
 
     def update_template_ctxt(self, config):
         charm_initcap = [a.title()
