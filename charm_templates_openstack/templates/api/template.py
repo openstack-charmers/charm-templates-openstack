@@ -34,7 +34,10 @@ class APITemplate(openstack_template.OpenStackCharmTemplate):
                          in config['metadata']['package'].split('-')]
         charm_class = '{}Charm'.format(''.join(charm_initcap))
         config['charm_class'] = charm_class
-        config['packages'] = str(config['packages'].split())
+        # XXX Temporary fix for xenial + hacluster lacking python-apt
+        _pkgs = '{} {}'.format(config['packages'], 'python-apt')
+        config['packages'] = str(_pkgs.split())
+        config['packages'].append('python-apt')
         config['release'] = config['release'].lower()
         new_name = config['metadata']['package'].replace('-', '_')
         config['charm_lib'] = '{}'.format(new_name)
