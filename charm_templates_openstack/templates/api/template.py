@@ -27,49 +27,29 @@ class APITemplate(openstack_template.OpenStackCharmTemplate):
     """Creates a reactive, layered python-based charm"""
 
     _TEMPLATE_URL = "https://github.com/openstack-charmers/charm-template-api.git"
+    charm_type = 'api'
 
-    def update_template_ctxt(self, config):
-        charm_initcap = [a.title()
-                         for a
-                         in config['metadata']['package'].split('-')]
-        charm_class = '{}Charm'.format(''.join(charm_initcap))
-        config['charm_class'] = charm_class
+    def update_template_ctxt(self):
+        super(APITemplate, self).update_template_ctxt()
         # XXX Temporary fix for xenial + hacluster lacking python-apt
-        _pkgs = '{} {}'.format(config['packages'], 'python-apt')
-        config['packages'] = str(_pkgs.split())
-        config['packages'].append('python-apt')
-        config['release'] = config['release'].lower()
-        new_name = config['metadata']['package'].replace('-', '_')
-        config['charm_lib'] = '{}'.format(new_name)
-        config['service_conf'] = 'apple'
-        # there must be a better way of creating a string representation of
+        _pkgs = '{} {}'.format(self.config['packages'], 'python-apt')
+        self.config['packages'] = str(_pkgs.split())
+        self.config['release'] = self.config['release'].lower()
+        self.config['service_conf'] = 'apple'
+        # There must be a better way of creating a string representation of
         # the restart_map...
-        restart_map = {a: 'services' for a in config['service_confs'].split()}
+        restart_map = {a: 'services'
+                       for a in self.config['service_confs'].split()}
         restart_map = str(restart_map).replace("'services'", "services")
-        config['restart_map'] = restart_map
+        self.config['restart_map'] = restart_map
         all_services = 'haproxy {} {}'.format(
-            config['api_service'],
-            config['service_init'])
-        config['all_services'] = str(all_services.split())
-        log.info('{}'.format(config['restart_map']))
-        bob = []
-        for cmd in config['db_sync_command'].split(','):
-            bob.append(str(cmd.split()))
-        config['db_sync_commands'] = bob
-        config['db_sync_command'] = str(config['db_sync_command'].split())
-        return config
-
-    def rename_files(self, config, output_dir):
-        # rename handlers.py to <charm-name>.py
-        new_name = config['metadata']['package'].replace('-', '_')
-        new_handler_name = '{}_handlers.py'.format(new_name)
-        new_lib_name = '{}.py'.format(new_name)
-        os.rename(
-            os.path.join(output_dir, 'src', 'reactive',
-                         'api_charm_handlers.py'),
-            os.path.join(output_dir, 'src', 'reactive', new_handler_name))
-        os.rename(
-            os.path.join(output_dir, 'src', 'lib', 'charm', 'openstack',
-                         'api_charm.py'),
-            os.path.join(output_dir, 'src', 'lib', 'charm', 'openstack',
-                         new_lib_name))
+            self.config['api_service'],
+            self.config['service_init'])
+        self.config['all_services'] = str(all_services.split())
+        log.info('{}'.format(self.config['restart_map']))
+        sync_commands = []
+        for cmd in self.config['db_sync_command'].split(','):
+            sync_commands.append(str(cmd.split()))
+        self.config['db_sync_commands'] = sync_commands
+        self.config['db_sync_command'] = str(
+            self.config['db_sync_command'].split())

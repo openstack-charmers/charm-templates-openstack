@@ -42,18 +42,25 @@ class OpenStackCharmTemplate(CharmTemplate):
     _EXTRA_FILES = ["README.md", ".git", ".gitmodules"]
 
     def create_charm(self, config, output_dir):
+        self.config = config
         self._clone_template(config, output_dir)
-        self.rename_files(config, output_dir)
-        config = self.update_template_ctxt(config)
+        self.update_template_ctxt()
+        self.rename_files(output_dir)
         for root, dirs, files in os.walk(output_dir):
             for outfile in files:
                 if self.skip_template(outfile):
                     continue
 
-                self._template_file(config, path.join(root, outfile))
+                self._template_file(self.config, path.join(root, outfile))
 
-    def update_template_ctxt(self, config):
-        return config
+    def update_template_ctxt(self):
+        charm_initcap = [a.title()
+                         for a
+                         in self.config['metadata']['package'].split('-')]
+        charm_class = '{}Charm'.format(''.join(charm_initcap))
+        self.config['charm_class'] = charm_class
+        new_name = self.config['metadata']['package'].replace('-', '_')
+        self.config['charm_lib'] = '{}'.format(new_name)
 
     def _template_file(self, config, outfile):
         if path.islink(outfile):
@@ -103,5 +110,21 @@ class OpenStackCharmTemplate(CharmTemplate):
             else:
                 os.remove(item)
 
-    def rename_files(self, config, output_dir):
-        return
+    @property
+    def src_handler_file(self):
+        return '{}_charm_handlers.py'.format(self.charm_type)
+
+    @property
+    def src_charm_file(self):
+        return '{}_charm.py'.format(self.charm_type)
+
+    def rename_files(self, output_dir):
+        new_handler_name = '{}_handlers.py'.format(self.config['charm_lib'])
+        new_lib_name = '{}.py'.format(self.config['charm_lib'])
+        src_handler_dir = os.path.join(output_dir, 'src', 'reactive')
+        src_charm_lib_dir = os.path.join(output_dir, 'src', 'lib', 'charm',
+'openstack')
+        os.rename(os.path.join(src_handler_dir, self.src_handler_file),
+                  os.path.join(src_handler_dir, new_handler_name))
+        os.rename(os.path.join(src_charm_lib_dir, self.src_charm_file),
+                  os.path.join(src_charm_lib_dir, new_lib_name))
