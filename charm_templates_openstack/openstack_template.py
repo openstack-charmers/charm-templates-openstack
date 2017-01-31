@@ -87,10 +87,12 @@ class OpenStackCharmTemplate(CharmTemplate):
         os.unlink(backupname)
 
     def _clone_template(self, config, output_dir):
+        templ_url =  os.environ.get(
+            'CHARM_TEMPLATE_LOCAL_BRANCH',
+            self._TEMPLATE_URL)
         cmd = "git clone --recursive {} {}".format(
-            self._TEMPLATE_URL, output_dir
+            templ_url, output_dir
         )
-
         try:
             subprocess.check_call(cmd.split())
         except OSError as e:
