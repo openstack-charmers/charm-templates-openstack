@@ -29,27 +29,22 @@ class APITemplate(openstack_template.OpenStackCharmTemplate):
     _TEMPLATE_URL = "https://github.com/openstack-charmers/charm-template-api.git"
     charm_type = 'api'
 
-    def update_template_ctxt(self):
-        super(APITemplate, self).update_template_ctxt()
+    @property
+    def template_context(self):
+        ctxt = super(APITemplate, self).template_context
         # XXX Temporary fix for xenial + hacluster lacking python-apt
-        _pkgs = '{} {}'.format(self.config['packages'], 'python-apt')
-        self.config['packages'] = str(_pkgs.split())
-        self.config['release'] = self.config['release'].lower()
-        self.config['service_conf'] = 'apple'
-        # There must be a better way of creating a string representation of
-        # the restart_map...
-        restart_map = {a: 'services'
-                       for a in self.config['service_confs'].split()}
-        restart_map = str(restart_map).replace("'services'", "services")
-        self.config['restart_map'] = restart_map
+        pkgs = ctxt['packages'].split() + ['python-apt']
+        ctxt['all_packages'] = str(pkgs)
+        ctxt['release'] = ctxt['release'].lower()
+        ctxt['restart_configs'] = ctxt['service_confs'].split()
+
         all_services = 'haproxy {} {}'.format(
-            self.config['api_service'],
-            self.config['service_init'])
-        self.config['all_services'] = str(all_services.split())
-        log.info('{}'.format(self.config['restart_map']))
-        sync_commands = []
-        for cmd in self.config['db_sync_command'].split(','):
-            sync_commands.append(str(cmd.split()))
-        self.config['db_sync_commands'] = sync_commands
-        self.config['db_sync_command'] = str(
-            self.config['db_sync_command'].split())
+            ctxt['api_service'],
+            ctxt['service_init'])
+        ctxt['all_services'] = str(all_services.split())
+
+        ctxt['db_manage_cmds'] = []
+        for cmd in ctxt['db_sync_command'].split(','):
+            ctxt['db_manage_cmds'].append(str(cmd.split()))
+        ctxt['db_manage_cmd'] = ctxt['db_manage_cmds'][0]
+        return ctxt
