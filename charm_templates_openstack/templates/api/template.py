@@ -38,10 +38,10 @@ class APITemplate(openstack_template.OpenStackCharmTemplate):
         ctxt['release'] = ctxt['release'].lower()
         ctxt['restart_configs'] = ctxt['service_confs'].split()
 
-        all_services = 'haproxy {} {}'.format(
-            ctxt['api_service'],
-            ctxt['service_init'])
-        ctxt['all_services'] = str(all_services.split())
+        all_services = list(set(['haproxy',
+                                 ctxt['api_service'],
+                                 ctxt['service_init']]))
+        ctxt['all_services'] = str(all_services)
 
         ctxt['db_manage_cmds'] = []
         for cmd in ctxt['db_sync_command'].split(','):

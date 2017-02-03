@@ -34,6 +34,7 @@ class OpenStackCharmTemplate(charmtools.generators.CharmTemplate):
     # _EXTRA_FILES is the list of names of files present in the git repo
     # we don't want transferred over to the charm template:
     _EXTRA_FILES = ["README.md", ".git", ".gitmodules"]
+    skip_parsing = ['README.ex', '*.pyc', '*sample']
 
     def create_charm(self, config, output_dir):
         """Generate charm from template
