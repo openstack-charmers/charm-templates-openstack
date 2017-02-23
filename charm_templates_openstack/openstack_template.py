@@ -21,8 +21,6 @@ import os
 import shutil
 import stat
 import subprocess
-import tempfile
-import time
 
 import charmtools.generators
 
@@ -109,6 +107,11 @@ class OpenStackCharmTemplate(charmtools.generators.CharmTemplate):
                             'openstack')
 
     @property
+    def unit_test_dir(self):
+        """Directory containing the unit tests"""
+        return os.path.join(self.output_dir, 'unit_tests')
+
+    @property
     def file_renames(self):
         """Files that require renaming"""
         return [
@@ -122,7 +125,6 @@ class OpenStackCharmTemplate(charmtools.generators.CharmTemplate):
     def rename_files(self):
         """Rename files to charm specific names"""
         for rename_info in self.file_renames:
-            pass
             os.rename(
                 os.path.join(rename_info['dirname'], rename_info['src_file']),
                 os.path.join(rename_info['dirname'], rename_info['dest_file']))

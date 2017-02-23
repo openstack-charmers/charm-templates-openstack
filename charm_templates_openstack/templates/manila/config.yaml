@@ -1,0 +1,13 @@
+prompts:
+  packages:
+    prompt: What packages should this charm install (space seperated list)?
+    default: ''
+    type: string
+  release:
+    prompt: What is the earliest OpenStack release this charm will support?
+    default: 'mitaka'
+    type: string
+  version-package:
+    prompt: What is the package to take the version from (manila-api is probably ok)?
+    default: 'manila-api'
+    type: string
