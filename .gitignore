@@ -1,5 +1,5 @@
 *swp
-*pyc
+*.pyc
 build/
 charm_templates_openstack.egg-info/
 dist/
