@@ -11,7 +11,7 @@ with open(os.path.join(here, 'README.rst')) as f:
 with open(os.path.join(here, 'CHANGES.txt')) as f:
     CHANGES = f.read()
 
-requires = ['charm-tools']
+requires = ['charm-tools', 'Jinja2']
 
 setup(name='charm_templates_openstack',
       version='0.0.1.dev1',
@@ -31,10 +31,14 @@ setup(name='charm_templates_openstack',
           exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
       include_package_data=True,
       install_requires=requires,
-      zip_safe = False,
+      zip_safe=False,
       entry_points={
         'charmtools.templates': [
-           'openstack-api = '
-               'charm_templates_openstack.templates.api:APITemplate',
-           'openstack-neutron-plugin = '
-               'charm_templates_openstack.templates.neutron:NeutronPluginTemplate']})
+            'openstack-api = '
+            'charm_templates_openstack.templates.api:APITemplate',
+            'openstack-neutron-plugin = '
+            'charm_templates_openstack.templates.neutron:'
+            'NeutronPluginTemplate',
+            'openstack-manila-plugin = '
+            'charm_templates_openstack.templates.manila:ManilaPluginTemplate'
+        ]})
