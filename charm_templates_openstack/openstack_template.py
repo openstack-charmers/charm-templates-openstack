@@ -71,7 +71,7 @@ class OpenStackCharmTemplate(charmtools.generators.CharmTemplate):
         template = jinja2.Template(template_src)
         with open(outfile, 'wb') as f:
             os.chmod(outfile, mode)
-            f.write(template.render(self.template_context))
+            f.write(template.render(self.template_context).encode('utf-8'))
 
     def clone_template_repo(self):
         """Clone Git repository containing templated charm
